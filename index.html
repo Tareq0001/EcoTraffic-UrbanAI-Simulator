@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTraffic UrbanAI | التوأم الرقمي للمدن الذكية ومحاكي حركة المرور</title>
+  <meta name="description" content="منصة محاكاة وإدارة حركة المرور الذكية والتوأم الرقمي للمدن الكبرى، مدعومة بنماذج فيزياء القيادة الدقيقة (IDM/MOBIL) والتعلم المعزز للإشارات الضوئية.">
+  <meta name="author" content="Tareq Ali (@Tareq0001)">
+
+  <!-- Google Fonts: Cairo & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Command Center Header -->
+  <header class="city-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo-icon">🚦</div>
+      <div class="brand-title-box">
+        <h1>EcoTraffic UrbanAI <span class="brand-tag">Smart City AI</span></h1>
+        <p>التوأم الرقمي للمدن الذكية ومحاكي حركة المرور والتحكم التكيفي بالذكاء الاصطناعي</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Emergency Ambulance Dispatch Button -->
+      <button class="btn-pill btn-emergency" id="btn-emergency-dispatch" title="توجيه سيارة إسعاف طارئة مع فتح مسار الموجة الخضراء آلياً">
+        <span>🚑 إرسال طوارئ (Green-Wave)</span>
+      </button>
+
+      <!-- Pause / Play Simulation -->
+      <button class="btn-pill" id="btn-pause-sim" title="إيقاف مؤقت / استئناف المحاكاة">
+        <span>⏸️ إيقاف مؤقت</span>
+      </button>
+
+      <!-- Procedural City Audio Toggle -->
+      <button class="btn-pill" id="btn-toggle-sound" title="تفعيل المؤثرات الصوتية لضجيج المدينة وصفارات الطوارئ">
+        <span>🔊 صوت المدينة</span>
+      </button>
+
+      <!-- Dark / Light Theme Toggle -->
+      <button class="btn-pill" id="btn-toggle-theme" title="التبديل بين الوضع الداكن والفاتح">
+        <span>🌙 المظهر</span>
+      </button>
+
+      <!-- Language Switcher (Arabic / English) -->
+      <button class="btn-pill" id="btn-toggle-lang" title="Switch Language">
+        <span>🇬🇧 English</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Real-Time Telemetry KPI Bar -->
+  <section class="telemetry-kpi-bar">
+    <div class="kpi-card">
+      <div class="kpi-label">🚗 المركبات النشطة</div>
+      <div class="kpi-value" id="badge-active-cars" style="color:var(--primary);">0</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">⚡ متوسط السرعة</div>
+      <div class="kpi-value" id="badge-avg-speed" style="color:var(--primary);">0 كم/س</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🚦 مؤشر الازدحام</div>
+      <div class="kpi-value" id="badge-congestion" style="color:var(--emerald);">0%</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🌱 انبعاثات CO₂ التراكمية</div>
+      <div class="kpi-value" id="badge-co2" style="color:var(--rose);">0.0 كجم</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">⚡ وفر الطاقة النظيفة (EV)</div>
+      <div class="kpi-value" id="badge-ev-offset" style="color:var(--emerald);">-0.0 كجم</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🔊 مستوى الضجيج البيئي</div>
+      <div class="kpi-value" id="badge-noise" style="color:var(--amber);">48 dB</div>
+    </div>
+
+    <div class="kpi-card" style="grid-column: span 1;">
+      <div class="kpi-label">🧠 نمط تحكم الإشارات</div>
+      <div class="kpi-value" id="badge-ai-mode" style="font-size:14px; font-weight:800; color:var(--primary);">🧠 وكيل الذكاء الاصطناعي (Q-Learning)</div>
+    </div>
+  </section>
+
+  <!-- Main Simulation Area -->
+  <main class="simulation-workspace">
+
+    <!-- Interactive Canvas Viewport -->
+    <section class="canvas-viewport-wrapper">
+      <div class="viewport-toolbar">
+        <!-- City Topology Presets -->
+        <div class="toolbar-group">
+          <span class="toolbar-title">النموذج الطبوغرافي:</span>
+          <button class="btn-tool btn-preset active" data-preset="abha" title="طريق الملك فهد والحزام الدائري في منطقة أبها وعسير">🏔️ طريق الملك فهد والدائري (أبها)</button>
+          <button class="btn-tool btn-preset" data-preset="grid" title="الشبكة الحضرية المركزية المتقاطعة">🏙️ الشبكة الحضرية (Downtown)</button>
+          <button class="btn-tool btn-preset" data-preset="roundabout" title="الدوار الذكي المتعدد ثلاثي المسارات">🔄 الدوار الذكي (Roundabout)</button>
+          <button class="btn-tool btn-preset" data-preset="highway" title="التقاطع السريع والتحويلات الحرة (Cloverleaf)">🛣️ التقاطع السريع (Cloverleaf)</button>
+        </div>
+
+        <!-- Weather Conditions -->
+        <div class="toolbar-group">
+          <span class="toolbar-title">الطقس:</span>
+          <button class="btn-tool btn-weather active" data-weather="clear">☀️ صحو</button>
+          <button class="btn-tool btn-weather" data-weather="rain">🌧️ أمطار</button>
+          <button class="btn-tool btn-weather" data-weather="fog">🌫️ ضباب</button>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="canvas-container">
+        <canvas id="city-canvas" width="1000" height="700"></canvas>
+
+        <!-- Floating Vehicle Inspector Panel (Shows upon clicking any car) -->
+        <div class="vehicle-inspector-card" id="vehicle-inspector">
+          <div class="inspector-header">
+            <strong style="font-size:12.5px; color:var(--text-main);">🔍 فاحص المركبة اللحظي</strong>
+            <button id="btn-close-inspector" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:14px;">✕</button>
+          </div>
+          <div class="inspector-grid">
+            <div class="inspector-row">
+              <span>نوع المركبة:</span>
+              <strong id="insp-type">SEDAN</strong>
+            </div>
+            <div class="inspector-row">
+              <span>السرعة الحالية:</span>
+              <strong id="insp-speed">0 كم/س</strong>
+            </div>
+            <div class="inspector-row">
+              <span>التسارع اللحظي:</span>
+              <strong id="insp-accel">0.0 م/ث²</strong>
+            </div>
+            <div class="inspector-row">
+              <span>نوع الوقود:</span>
+              <strong id="insp-fuel">gasoline</strong>
+            </div>
+            <div class="inspector-row">
+              <span>بصمة CO₂ المنبعثة:</span>
+              <strong id="insp-co2">0.0 جم</strong>
+            </div>
+            <div class="inspector-row">
+              <span>مؤشر صبر السائق:</span>
+              <strong id="insp-patience">100%</strong>
+            </div>
+            <div class="inspector-row" style="grid-column:span 2;">
+              <span>الشارع الحالي:</span>
+              <strong id="insp-edge" style="font-size:11px;">طريق الملك فهد</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Control & Analytics -->
+    <aside class="city-sidebar">
+
+      <!-- Signal AI Mode Panel -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">🧠 نظام إدارة الإشارات الذكية</h3>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button class="btn-tool btn-ai-mode" data-mode="fixed" style="width:100%; text-align:right;">
+            <strong>⏱️ توقيت دوري ثابت (Fixed Timers)</strong>
+            <div style="font-size:10.5px; color:var(--text-dim); margin-top:2px;">دورات زمنية تقليدية مسبقة البرمجة (تسبب اختناقات).</div>
+          </button>
+          <button class="btn-tool btn-ai-mode" data-mode="actuated" style="width:100%; text-align:right;">
+            <strong>📡 تحكم بمستشعرات الطوابير (Actuated)</strong>
+            <div style="font-size:10.5px; color:var(--text-dim); margin-top:2px;">تحويل فوري عند خلو المسار ووجود سيارات منتظرة.</div>
+          </button>
+          <button class="btn-tool btn-ai-mode active" data-mode="qlearning" style="width:100%; text-align:right;">
+            <strong>🧠 وكيل الذكاء الاصطناعي (Q-Learning)</strong>
+            <div style="font-size:10.5px; color:var(--text-dim); margin-top:2px;">تعلم معزز يوازن بين زمن الانتظار ومعدل تدفق المركبات.</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Traffic Density & Green Transition Sliders -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">⚙️ معايير حركة المدينة</h3>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>معدل تدفق المركبات:</span>
+            <strong id="lbl-spawn-rate" style="color:var(--primary);">45 / دقيقة</strong>
+          </div>
+          <input type="range" class="slider-input" id="slider-spawn-rate" min="10" max="90" value="45">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>نسبة تبني السيارات الكهربائية (EVs):</span>
+            <strong id="lbl-ev-rate" style="color:var(--emerald);">35%</strong>
+          </div>
+          <input type="range" class="slider-input" id="slider-ev-rate" min="0" max="100" value="35">
+        </div>
+
+        <div style="font-size:11.5px; color:var(--text-muted); line-height:1.5; background:var(--bg-subtle); padding:10px; border-radius:8px;">
+          💡 <strong>نصيحة تفاعلية:</strong> انقر في أي مكان داخل الشارع على الخريطة لإنشاء <strong>حادث مروري أو إغلاق مسار</strong> وشاهد كيف تتصرف المركبات تلقائياً!
+        </div>
+      </div>
+
+      <!-- Real-time Timeline Chart -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">📈 منحنى السرعة ومؤشر الازدحام</h3>
+        </div>
+        <div class="chart-box">
+          <canvas id="chart-timeline" width="300" height="120"></canvas>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-dim); margin-top:6px;">
+          <span style="color:#0284c7;">● متوسط السرعة (كم/س)</span>
+          <span style="color:#ef4444;">● نسبة الازدحام (%)</span>
+        </div>
+      </div>
+
+      <!-- Fleet Distribution Donut Chart -->
+      <div class="sidebar-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">🚗 تركيبة أسطول المركبات</h3>
+        </div>
+        <div class="chart-box" style="height:140px;">
+          <canvas id="chart-fleet" width="300" height="140"></canvas>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Interactive Toast Notification -->
+  <div class="city-toast" id="city-toast">
+    <span id="toast-msg">تم تشغيل المحاكاة بنجاح</span>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/sound-effects.js"></script>
+  <script src="js/road-network.js"></script>
+  <script src="js/vehicle-agent.js"></script>
+  <script src="js/ai-traffic-lights.js"></script>
+  <script src="js/city-presets.js"></script>
+  <script src="js/environmental-engine.js"></script>
+  <script src="js/telemetry-charts.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

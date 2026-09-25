@@ -1,0 +1,493 @@
+/* ==========================================================================
+   EcoTraffic UrbanAI | Smart City Digital Twin & Multi-Agent Traffic Simulator
+   Design System: Tesla Autopilot & Silicon Valley Clean Urban Tech Theme
+   Author: Tareq Ali (@Tareq0001)
+   ========================================================================== */
+
+:root {
+  /* Dark Theme (Default) */
+  --bg-app: #0b0f19;
+  --bg-surface: #141c2b;
+  --bg-subtle: #1e293b;
+  --bg-hover: #273549;
+  --border-color: #273549;
+  --border-focus: #38bdf8;
+
+  --primary: #38bdf8;
+  --primary-dim: rgba(56, 189, 248, 0.18);
+  --primary-border: #0284c7;
+
+  --emerald: #10b981;
+  --emerald-dim: rgba(16, 185, 129, 0.18);
+  --emerald-border: #059669;
+
+  --amber: #f59e0b;
+  --amber-dim: rgba(245, 158, 11, 0.18);
+  --amber-border: #d97706;
+
+  --rose: #ef4444;
+  --rose-dim: rgba(239, 68, 68, 0.18);
+  --rose-border: #dc2626;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+
+  --font-sans: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --border-color: #cbd5e1;
+  --border-focus: #0284c7;
+
+  --primary: #0284c7;
+  --primary-dim: rgba(2, 132, 199, 0.12);
+  --primary-border: #7dd3fc;
+
+  --emerald: #059669;
+  --emerald-dim: rgba(5, 150, 105, 0.12);
+  --emerald-border: #6ee7b7;
+
+  --amber: #d97706;
+  --amber-dim: rgba(217, 119, 6, 0.12);
+  --amber-border: #fcd34d;
+
+  --rose: #dc2626;
+  --rose-dim: rgba(220, 38, 38, 0.12);
+  --rose-border: #fca5a5;
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-app);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+   APP HEADER & COMMAND BAR
+   ========================================================================== */
+.city-header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #10b981 0%, #0284c7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+.brand-title-box h1 {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--emerald-dim);
+  color: var(--emerald);
+  border: 1px solid var(--emerald-border);
+}
+
+.brand-title-box p {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-pill {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-pill:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary);
+}
+
+.btn-pill.active {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-emergency {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.btn-emergency:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6) !important;
+}
+
+/* ==========================================================================
+   METRICS TELEMETRY BAR
+   ========================================================================== */
+.telemetry-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--bg-app);
+}
+
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kpi-value {
+  font-size: 20px;
+  font-weight: 900;
+  font-family: var(--font-mono);
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   SIMULATION WORKSPACE (CANVAS + SIDEBAR)
+   ========================================================================== */
+.simulation-workspace {
+  display: flex;
+  flex: 1;
+  padding: 0 24px 24px 24px;
+  gap: 18px;
+}
+
+.canvas-viewport-wrapper {
+  flex: 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.viewport-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.btn-tool {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tool:hover {
+  background: var(--bg-hover);
+}
+
+.btn-tool.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.canvas-container {
+  flex: 1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-app);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+#city-canvas {
+  width: 100%;
+  max-height: 700px;
+  aspect-ratio: 1000 / 700;
+  display: block;
+  cursor: crosshair;
+}
+
+/* Floating Vehicle Inspector Card */
+.vehicle-inspector-card {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(20, 28, 43, 0.94);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px;
+  width: 280px;
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.vehicle-inspector-card.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.inspector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 11.5px;
+}
+
+.inspector-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inspector-row span {
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.inspector-row strong {
+  font-family: var(--font-mono);
+  color: var(--primary);
+  font-size: 12.5px;
+}
+
+/* ==========================================================================
+   SIDEBAR ANALYTICS & CITY CONTROLS
+   ========================================================================== */
+.city-sidebar {
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.panel-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.slider-input {
+  width: 100%;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* Canvas Mini Charts */
+.chart-box {
+  width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  padding: 6px;
+  position: relative;
+}
+
+.chart-box canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS
+   ========================================================================== */
+.city-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.city-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .simulation-workspace {
+    flex-direction: column;
+  }
+  .city-sidebar {
+    width: 100%;
+  }
+}
