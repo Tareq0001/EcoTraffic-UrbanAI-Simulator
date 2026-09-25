@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const network = new RoadNetwork();
   const signalEngine = new TrafficLightController(sound);
   const envEngine = new EnvironmentalEngine();
+  const v2xEngine = new V2XNetworkEngine();
+  const pedestrianEngine = new PedestrianEngine(sound);
+  const scenarioStudio = new ScenarioStudio(sound);
+  const cockpitHud = new CockpitHudEngine();
+  const aiTrainingLab = new AiTrainingLab(signalEngine);
 
   // Simulation State
   let vehicles = [];
@@ -20,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedVehicle = null;
   let activeWeather = 'clear'; // 'clear', 'rain', 'fog'
   let isPaused = false;
+  let is25DTilt = false; // 2.5D Isometric Tilt View Toggle
   let timeScale = 1.0;
   let currentPreset = 'abha'; // 'abha', 'grid', 'roundabout', 'highway'
   let spawnRatePerMin = 45;
@@ -37,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const chartTimeline = document.getElementById('chart-timeline');
   const chartFleet = document.getElementById('chart-fleet');
+  const chartRlReward = document.getElementById('chart-rl-reward');
 
   // DOM Elements - Telemetry Badges
   const badgeActiveCars = document.getElementById('badge-active-cars');
@@ -106,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
       CityPresetsGenerator.buildHighwayCloverleaf(network, signalEngine);
       showToast(currentLanguage === 'ar' ? 'تم تحميل: التقاطع السريع الحر (Cloverleaf)' : 'Loaded: Highway Interchange');
     }
+
+    // Initialize crosswalks and clear scenarios
+    pedestrianEngine.initCrosswalks(network);
+    scenarioStudio.clearAll(network, incidents, vehicles);
 
     // Seed initial vehicles
     for (let i = 0; i < 16; i++) {
@@ -227,23 +238,46 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = currentTheme === 'dark' ? '#0d131f' : '#f1f5f9';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Apply 2.5D Isometric Tilt Matrix if enabled
+    ctx.save();
+    if (is25DTilt) {
+      ctx.translate(canvas.width / 2, 75);
+      ctx.scale(1, 0.74);
+      ctx.rotate(-Math.PI / 18);
+      ctx.translate(-canvas.width / 2, 0);
+    }
+
     // Subtle city building / mountain contours
     drawLandscapeDetails();
 
     // 2. Draw Roads (Asphalt, markings, curbs)
     drawRoadNetwork();
 
-    // 3. Draw Traffic Signals (Housing, Red/Yellow/Green lamps)
+    // 3. Draw Crosswalks & Pedestrians
+    pedestrianEngine.draw(ctx);
+
+    // 4. Draw Traffic Signals (Housing, Red/Yellow/Green lamps)
     drawTrafficSignals();
 
-    // 4. Draw Incidents / Cones
+    // 5. Draw Incidents & Scenario Hazards
     drawIncidents();
+    scenarioStudio.draw(ctx);
 
-    // 5. Draw Vehicles
+    // 6. Draw Vehicles
     drawVehicles();
 
-    // 6. Draw Weather Overlays (Rain or Fog)
+    // 7. Draw V2X Wireless Mesh & Collision Warning Links
+    v2xEngine.draw(ctx);
+
+    if (is25DTilt) {
+      ctx.restore();
+    }
+
+    // 8. Draw Weather Overlays (Rain or Fog)
     drawWeatherOverlay();
+
+    // 9. Draw Cockpit HUD Instrument Cluster (2D screen overlay)
+    cockpitHud.draw(ctx, selectedVehicle, network, signalEngine);
   }
 
   function drawLandscapeDetails() {
@@ -505,7 +539,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Remove completed vehicles
       vehicles = vehicles.filter(v => !v.isFinished);
 
-      // 5. Update Environmental Engine
+      // 5. Update Pedestrians, V2X Network, and Crisis Scenarios
+      pedestrianEngine.update(dt, vehicles);
+      v2xEngine.update(dt, vehicles, network, signalEngine);
+      scenarioStudio.update(dt);
+
+      // 6. Update Environmental Engine
       const envMetrics = envEngine.update(dt, vehicles, network);
       if (envMetrics) {
         updateTelemetryUI(envMetrics);
@@ -710,6 +749,187 @@ document.addEventListener('DOMContentLoaded', () => {
       document.documentElement.setAttribute('dir', currentLanguage === 'ar' ? 'rtl' : 'ltr');
       btnToggleLang.textContent = currentLanguage === 'ar' ? '🇬🇧 English' : '🇸🇦 العربية';
       showToast(currentLanguage === 'ar' ? 'تم تحويل الواجهة إلى العربية 🇸🇦' : 'Switched interface to English 🇬🇧');
+    });
+  }
+
+  // V2X Network Toggle
+  const btnToggleV2x = document.getElementById('btn-toggle-v2x');
+  if (btnToggleV2x) {
+    btnToggleV2x.addEventListener('click', () => {
+      const active = v2xEngine.toggle();
+      btnToggleV2x.classList.toggle('active', active);
+      showToast(active ? 'تم تفعيل شبكة V2X وقوافل الشاحنات 📡' : 'تم تعطيل شبكة V2X');
+    });
+  }
+
+  // 2.5D Isometric Tilt Perspective Toggle
+  const btnToggleTilt = document.getElementById('btn-toggle-tilt');
+  if (btnToggleTilt) {
+    btnToggleTilt.addEventListener('click', () => {
+      is25DTilt = !is25DTilt;
+      btnToggleTilt.classList.toggle('active', is25DTilt);
+      showToast(is25DTilt ? 'تم تفعيل المنظور الأيزومتري المائل 2.5D 📐' : 'العودة للمنظور المستوي 2D');
+    });
+  }
+
+  // Pedestrian Walk Request Button
+  const btnPedestrianWalk = document.getElementById('btn-pedestrian-walk');
+  if (btnPedestrianWalk) {
+    btnPedestrianWalk.addEventListener('click', () => {
+      pedestrianEngine.requestCrossing();
+      showToast('🚶 تم تفعيل إشارة عبور المشاة وتأمين مسار العبور!');
+    });
+  }
+
+  // Emergency & Crisis Scenarios
+  document.querySelectorAll('.btn-scenario').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const scenario = btn.getAttribute('data-scenario');
+      if (scenario === 'vip') {
+        scenarioStudio.injectVipConvoy(network, vehicles, () => nextVehicleId++);
+        showToast('🚨 تم إطلاق موكب رسمي محمي مع فتح مسار طوارئ متتابع!');
+      } else if (scenario === 'construction') {
+        scenarioStudio.injectConstruction(network, incidents);
+        showToast('🚧 تم بدء أعمال صيانة طريق وإغلاق المسار؛ مراقبة انسياب MOBIL!');
+      } else if (scenario === 'accident') {
+        scenarioStudio.injectAccident(network, incidents);
+        showToast('💥 حادث تصادم مروري! إشارة تحذيرية وتأخر تدفق السيارات');
+      } else if (scenario === 'flood') {
+        scenarioStudio.injectFlashFlood(network, incidents);
+        showToast('🌊 تجمع سيول جبلية وجريان مياه؛ خفض سرعة المركبات آلياً');
+      } else if (scenario === 'clear') {
+        scenarioStudio.clearAll(network, incidents, vehicles);
+        showToast('🧹 تم تنظيف وإزالة كافة الحوادث والسيناريوهات الميدانية بنجاح');
+      }
+    });
+  });
+
+  // Cockpit HUD Toggle
+  const btnToggleCockpit = document.getElementById('btn-toggle-cockpit-hud');
+  if (btnToggleCockpit) {
+    btnToggleCockpit.addEventListener('click', () => {
+      cockpitHud.toggle();
+      showToast(cockpitHud.isOpen ? 'تم تفعيل لوحة قيادة السائق (Cockpit HUD) 🏎️' : 'تم إغلاق لوحة القيادة');
+    });
+  }
+
+  // Modal 1: Smart City Sustainability & LOS Report
+  const modalReport = document.getElementById('modal-city-report');
+  const btnOpenReport = document.getElementById('btn-open-report');
+  const btnCloseReport = document.getElementById('btn-close-report');
+  const btnDownloadReport = document.getElementById('btn-download-report-json');
+  const btnPrintReport = document.getElementById('btn-print-report');
+
+  let currentReportMetrics = null;
+
+  if (btnOpenReport && modalReport) {
+    btnOpenReport.addEventListener('click', () => {
+      currentReportMetrics = SmartCityReportGenerator.computeMetrics(envEngine, signalEngine, vehicles, network);
+
+      // Populate Modal Fields
+      const badge = document.getElementById('rep-los-badge');
+      const title = document.getElementById('rep-los-title');
+      const desc = document.getElementById('rep-los-desc');
+      const delay = document.getElementById('rep-delay');
+      const co2 = document.getElementById('rep-co2');
+      const fuel = document.getElementById('rep-fuel');
+      const econ = document.getElementById('rep-econ');
+
+      if (badge) {
+        badge.textContent = currentReportMetrics.levelOfService.grade;
+        badge.style.background = currentReportMetrics.levelOfService.badgeColor;
+      }
+      if (title) title.textContent = `مستوى الخدمة (Level of Service: ${currentReportMetrics.levelOfService.grade})`;
+      if (desc) desc.textContent = currentLanguage === 'ar' ? currentReportMetrics.levelOfService.descriptionAr : currentReportMetrics.levelOfService.descriptionEn;
+      if (delay) delay.textContent = `${currentReportMetrics.averageDelaySeconds} ثانية`;
+      if (co2) co2.textContent = `${currentReportMetrics.environmentalFootprint.evCleanEnergyOffsetKg} كجم`;
+      if (fuel) fuel.textContent = `${currentReportMetrics.environmentalFootprint.equivalentFuelSavedLiters} لتر`;
+      if (econ) econ.textContent = `${currentReportMetrics.environmentalFootprint.estimatedEconomicBenefitSar} ريال`;
+
+      modalReport.classList.add('show');
+    });
+  }
+
+  if (btnCloseReport && modalReport) {
+    btnCloseReport.addEventListener('click', () => modalReport.classList.remove('show'));
+    modalReport.addEventListener('click', (e) => {
+      if (e.target === modalReport) modalReport.classList.remove('show');
+    });
+  }
+
+  if (btnDownloadReport) {
+    btnDownloadReport.addEventListener('click', () => {
+      if (currentReportMetrics) {
+        SmartCityReportGenerator.downloadJson(currentReportMetrics);
+        showToast('📥 تم تحميل ملف تقرير المدينة الذكية (JSON)');
+      }
+    });
+  }
+
+  if (btnPrintReport) {
+    btnPrintReport.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  // Modal 2: RL Training Lab & Q-Learning Playground
+  const modalRlLab = document.getElementById('modal-rl-lab');
+  const btnOpenRlLab = document.getElementById('btn-open-rl-lab');
+  const btnCloseRlLab = document.getElementById('btn-close-rl-lab');
+  const btnTrainEpisodes = document.getElementById('btn-train-episodes');
+  const lblTrainedCount = document.getElementById('lbl-trained-count');
+
+  if (btnOpenRlLab && modalRlLab) {
+    btnOpenRlLab.addEventListener('click', () => {
+      modalRlLab.classList.add('show');
+      aiTrainingLab.drawConvergenceChart(chartRlReward);
+    });
+  }
+
+  if (btnCloseRlLab && modalRlLab) {
+    btnCloseRlLab.addEventListener('click', () => modalRlLab.classList.remove('show'));
+    modalRlLab.addEventListener('click', (e) => {
+      if (e.target === modalRlLab) modalRlLab.classList.remove('show');
+    });
+  }
+
+  if (btnTrainEpisodes) {
+    btnTrainEpisodes.addEventListener('click', () => {
+      aiTrainingLab.trainEpisodes(50);
+      aiTrainingLab.drawConvergenceChart(chartRlReward);
+      if (lblTrainedCount) {
+        lblTrainedCount.textContent = `إجمالي الحلقات: ${aiTrainingLab.totalEpisodesTrained}`;
+      }
+      sound.playSignalChangeChime();
+      showToast(`⚡ تم تدريب 50 حلقة بنجاح! تحديث مصفوفة سياسة Q-Table`);
+    });
+  }
+
+  // RL Hyperparameter Sliders
+  const sliderAlpha = document.getElementById('slider-rl-alpha');
+  const lblAlpha = document.getElementById('lbl-rl-alpha');
+  if (sliderAlpha) {
+    sliderAlpha.addEventListener('input', (e) => {
+      aiTrainingLab.alpha = parseFloat(e.target.value);
+      if (lblAlpha) lblAlpha.textContent = aiTrainingLab.alpha.toFixed(2);
+    });
+  }
+
+  const sliderGamma = document.getElementById('slider-rl-gamma');
+  const lblGamma = document.getElementById('lbl-rl-gamma');
+  if (sliderGamma) {
+    sliderGamma.addEventListener('input', (e) => {
+      aiTrainingLab.gamma = parseFloat(e.target.value);
+      if (lblGamma) lblGamma.textContent = aiTrainingLab.gamma.toFixed(2);
+    });
+  }
+
+  const sliderEpsilon = document.getElementById('slider-rl-epsilon');
+  const lblEpsilon = document.getElementById('lbl-rl-epsilon');
+  if (sliderEpsilon) {
+    sliderEpsilon.addEventListener('input', (e) => {
+      aiTrainingLab.epsilon = parseFloat(e.target.value);
+      if (lblEpsilon) lblEpsilon.textContent = aiTrainingLab.epsilon.toFixed(2);
     });
   }
 

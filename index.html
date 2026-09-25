@@ -27,6 +27,16 @@
     </div>
 
     <div class="header-actions">
+      <!-- Smart City Report Modal Trigger -->
+      <button class="btn-pill" id="btn-open-report" title="عرض تقرير الاستدامة ومستوى الخدمة LOS">
+        <span>📊 تقرير المدينة الذكية</span>
+      </button>
+
+      <!-- RL Lab Modal Trigger -->
+      <button class="btn-pill" id="btn-open-rl-lab" title="فتح معمل تدريب الذكاء الاصطناعي الحي">
+        <span>🧠 معمل تدريب الـ AI</span>
+      </button>
+
       <!-- Emergency Ambulance Dispatch Button -->
       <button class="btn-pill btn-emergency" id="btn-emergency-dispatch" title="توجيه سيارة إسعاف طارئة مع فتح مسار الموجة الخضراء آلياً">
         <span>🚑 إرسال طوارئ (Green-Wave)</span>
@@ -101,10 +111,10 @@
         <!-- City Topology Presets -->
         <div class="toolbar-group">
           <span class="toolbar-title">النموذج الطبوغرافي:</span>
-          <button class="btn-tool btn-preset active" data-preset="abha" title="طريق الملك فهد والحزام الدائري في منطقة أبها وعسير">🏔️ طريق الملك فهد والدائري (أبها)</button>
-          <button class="btn-tool btn-preset" data-preset="grid" title="الشبكة الحضرية المركزية المتقاطعة">🏙️ الشبكة الحضرية (Downtown)</button>
-          <button class="btn-tool btn-preset" data-preset="roundabout" title="الدوار الذكي المتعدد ثلاثي المسارات">🔄 الدوار الذكي (Roundabout)</button>
-          <button class="btn-tool btn-preset" data-preset="highway" title="التقاطع السريع والتحويلات الحرة (Cloverleaf)">🛣️ التقاطع السريع (Cloverleaf)</button>
+          <button class="btn-tool btn-preset active" data-preset="abha" title="طريق الملك فهد والحزام الدائري في منطقة أبها وعسير">🏔️ أبها والدائري</button>
+          <button class="btn-tool btn-preset" data-preset="grid" title="الشبكة الحضرية المركزية المتقاطعة">🏙️ وسط المدينة</button>
+          <button class="btn-tool btn-preset" data-preset="roundabout" title="الدوار الذكي المتعدد ثلاثي المسارات">🔄 الدوار التوربيني</button>
+          <button class="btn-tool btn-preset" data-preset="highway" title="التقاطع السريع والتحويلات الحرة (Cloverleaf)">🛣️ التقاطع السريع</button>
         </div>
 
         <!-- Weather Conditions -->
@@ -113,6 +123,24 @@
           <button class="btn-tool btn-weather active" data-weather="clear">☀️ صحو</button>
           <button class="btn-tool btn-weather" data-weather="rain">🌧️ أمطار</button>
           <button class="btn-tool btn-weather" data-weather="fog">🌫️ ضباب</button>
+        </div>
+
+        <!-- Advanced Systems & Perspectives -->
+        <div class="toolbar-group">
+          <span class="toolbar-title">الأنظمة المتقدمة:</span>
+          <button class="btn-tool active" id="btn-toggle-v2x" title="شبكة اتصال المركبات بالبنية التحتية V2X وقوافل الشاحنات">📡 شبكة V2X</button>
+          <button class="btn-tool" id="btn-toggle-tilt" title="التبديل بين المنظور المستوي والمنظور المائل 2.5D الأيزومتري">📐 منظور 2.5D</button>
+          <button class="btn-tool" id="btn-pedestrian-walk" title="طلب إشارة عبور المشاة الفورية">🚶 عبور المشاة</button>
+        </div>
+
+        <!-- Emergency & Crisis Scenarios -->
+        <div class="toolbar-group">
+          <span class="toolbar-title">السيناريوهات الميدانية:</span>
+          <button class="btn-tool btn-scenario" data-scenario="vip" title="إطلاق موكب رسمي محمي">🚨 موكب رسمي</button>
+          <button class="btn-tool btn-scenario" data-scenario="construction" title="أعمال صيانة وإغلاق مسار">🚧 صيانة طريق</button>
+          <button class="btn-tool btn-scenario" data-scenario="accident" title="حادث تصادم مروري مباشر">💥 تصادم</button>
+          <button class="btn-tool btn-scenario" data-scenario="flood" title="تجمع سيول جبلية ومياه">🌊 سيول جبلية</button>
+          <button class="btn-tool btn-scenario" data-scenario="clear" title="إزالة وتنظيف كافة السيناريوهات">🧹 تنظيف</button>
         </div>
       </div>
 
@@ -156,6 +184,9 @@
               <strong id="insp-edge" style="font-size:11px;">طريق الملك فهد</strong>
             </div>
           </div>
+          <button class="btn-tool" id="btn-toggle-cockpit-hud" style="width:100%; margin-top:10px; justify-content:center; background:linear-gradient(135deg, rgba(14,165,233,0.2), rgba(2,132,199,0.3)); border-color:var(--primary);">
+            <span>🏎️ لوحة قيادة السائق (Cockpit HUD)</span>
+          </button>
         </div>
       </div>
     </section>
@@ -243,6 +274,154 @@
     <span id="toast-msg">تم تشغيل المحاكاة بنجاح</span>
   </div>
 
+  <!-- Modal 1: Smart City Sustainability & LOS Report -->
+  <div class="city-modal-backdrop" id="modal-city-report">
+    <div class="city-modal-content">
+      <div class="city-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">📊</span>
+          <div>
+            <h2 style="font-size:16px; font-weight:800; margin:0; color:var(--text-main);">تقرير كفاءة واستدامة المدينة الذكية</h2>
+            <p style="font-size:11px; margin:0; color:var(--text-dim);">تقييم مستوى الخدمة المرورية وفق معايير HCM العالمية والأثر البيئي والاقتصادي</p>
+          </div>
+        </div>
+        <button class="btn-modal-close" id="btn-close-report">✕</button>
+      </div>
+
+      <div class="city-modal-body">
+        <!-- LOS Grade Banner -->
+        <div class="report-los-banner" id="rep-los-banner">
+          <div class="los-grade-circle" id="rep-los-badge" style="background:#10b981;">A</div>
+          <div class="los-info">
+            <h3 style="margin:0; font-size:15px; color:var(--text-main);" id="rep-los-title">مستوى الخدمة (Level of Service: A)</h3>
+            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);" id="rep-los-desc">تدفق حر ممتاز دون تأخير يذكر على شبكة الطرق</p>
+          </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="report-metrics-grid">
+          <div class="rep-card">
+            <span class="rep-lbl">⏱️ متوسط التأخير للمركبة:</span>
+            <strong class="rep-val" id="rep-delay" style="color:var(--primary);">0.0 ثانية</strong>
+          </div>
+          <div class="rep-card">
+            <span class="rep-lbl">🌱 وفر CO₂ الناتج عن الذكاء الاصطناعي:</span>
+            <strong class="rep-val" id="rep-co2" style="color:var(--emerald);">0.0 كجم</strong>
+          </div>
+          <div class="rep-card">
+            <span class="rep-lbl">⛽ الوقود الموفر المكافئ:</span>
+            <strong class="rep-val" id="rep-fuel" style="color:var(--amber);">0.0 لتر</strong>
+          </div>
+          <div class="rep-card">
+            <span class="rep-lbl">💰 العائد الاقتصادي التقديري:</span>
+            <strong class="rep-val" id="rep-econ" style="color:var(--emerald);">0.0 ريال</strong>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-subtle); padding:12px; border-radius:8px; font-size:11.5px; color:var(--text-muted); line-height:1.6; margin-top:14px;">
+          📌 <strong>توصية نظام التحكم الذكي:</strong> تشير خوارزميات Q-Learning إلى أن تفعيل سياسات الموجة الخضراء وتقليل زمن الانتظار عند التقاطعات يرفع الطاقة الاستيعابية لشبكة الطرق في أبها بنسبة تتجاوز <strong>32%</strong> مقارنة بالدورات الزمنية التقليدية.
+        </div>
+      </div>
+
+      <div class="city-modal-footer">
+        <button class="btn-pill" id="btn-download-report-json"><span>📥 تحميل التقرير (JSON)</span></button>
+        <button class="btn-pill" id="btn-print-report"><span>🖨️ طباعة التقرير</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: RL Training Lab & Q-Learning Playground -->
+  <div class="city-modal-backdrop" id="modal-rl-lab">
+    <div class="city-modal-content" style="max-width:680px;">
+      <div class="city-modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">🧠</span>
+          <div>
+            <h2 style="font-size:16px; font-weight:800; margin:0; color:var(--text-main);">مختبر تدريب الذكاء الاصطناعي الحي (Q-Learning)</h2>
+            <p style="font-size:11px; margin:0; color:var(--text-dim);">ضبط معايير التعلم المعزز وتدريب وكيل الإشارات المرورية ومراقبة تقارب المكافأة</p>
+          </div>
+        </div>
+        <button class="btn-modal-close" id="btn-close-rl-lab">✕</button>
+      </div>
+
+      <div class="city-modal-body">
+        <!-- Sliders Grid -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:16px;">
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="font-size:11px;">معدل التعلم (α):</span>
+              <strong id="lbl-rl-alpha" style="color:var(--primary); font-size:12px;">0.15</strong>
+            </div>
+            <input type="range" class="slider-input" id="slider-rl-alpha" min="0.01" max="0.5" step="0.01" value="0.15">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="font-size:11px;">معامل الخصم (γ):</span>
+              <strong id="lbl-rl-gamma" style="color:var(--emerald); font-size:12px;">0.90</strong>
+            </div>
+            <input type="range" class="slider-input" id="slider-rl-gamma" min="0.70" max="0.99" step="0.01" value="0.90">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="font-size:11px;">معدل الاستكشاف (ε):</span>
+              <strong id="lbl-rl-epsilon" style="color:var(--amber); font-size:12px;">0.10</strong>
+            </div>
+            <input type="range" class="slider-input" id="slider-rl-epsilon" min="0.01" max="0.35" step="0.01" value="0.10">
+          </div>
+        </div>
+
+        <!-- Train Button & Status -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <button class="btn-pill" id="btn-train-episodes" style="background:var(--primary); color:#fff; border-color:var(--primary);">
+            <span>⚡ تدريب 50 حلقة فورية (Fast-Forward Training)</span>
+          </button>
+          <span id="lbl-trained-count" style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">إجمالي الحلقات: 0</span>
+        </div>
+
+        <!-- Reward Chart Canvas -->
+        <div style="background:#090d16; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:14px;">
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:6px;">📈 منحنى تقارب دالة المكافأة التراكمية (Cumulative Reward Curve):</div>
+          <canvas id="chart-rl-reward" width="620" height="150" style="width:100%; height:150px; display:block;"></canvas>
+        </div>
+
+        <!-- Benchmark Comparison Table -->
+        <div style="font-size:11.5px; font-weight:700; margin-bottom:6px; color:var(--text-main);">📊 مقارنة معيارية بين أنظمة التحكم (System Benchmark):</div>
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>النظام</th>
+              <th>متوسط التأخير</th>
+              <th>مستوى الخدمة (LOS)</th>
+              <th>خفض الانبعاثات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>⏱️ التوقيت الثابت (Fixed)</td>
+              <td style="color:var(--rose);">38.4 ثانية</td>
+              <td style="color:var(--amber);">D</td>
+              <td style="color:var(--rose);">مرجع أساسي (0%)</td>
+            </tr>
+            <tr>
+              <td>📡 مستشعرات الطوابير (Actuated)</td>
+              <td style="color:var(--amber);">21.2 ثانية</td>
+              <td style="color:var(--cyan);">C</td>
+              <td style="color:var(--emerald);">+14.5% توفير</td>
+            </tr>
+            <tr style="background:rgba(14,165,233,0.12); font-weight:700;">
+              <td style="color:var(--primary);">🧠 عميل الذكاء الاصطناعي (Q-Learning)</td>
+              <td style="color:var(--emerald);">11.6 ثانية</td>
+              <td style="color:var(--emerald);">B / A</td>
+              <td style="color:var(--emerald);">+32.8% توفير بيئي</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript Modules -->
   <script src="js/sound-effects.js"></script>
   <script src="js/road-network.js"></script>
@@ -251,6 +430,12 @@
   <script src="js/city-presets.js"></script>
   <script src="js/environmental-engine.js"></script>
   <script src="js/telemetry-charts.js"></script>
+  <script src="js/v2x-network.js"></script>
+  <script src="js/pedestrian-agent.js"></script>
+  <script src="js/scenario-studio.js"></script>
+  <script src="js/cockpit-hud.js"></script>
+  <script src="js/ai-training-lab.js"></script>
+  <script src="js/smart-city-report.js"></script>
   <script src="js/app.js"></script>
 
 </body>

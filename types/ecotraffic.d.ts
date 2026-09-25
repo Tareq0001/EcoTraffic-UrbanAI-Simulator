@@ -137,4 +137,36 @@ export interface CitySimulationState {
   evAdoptionRatePercent: number;
   isPaused: boolean;
   selectedVehicleId: string | null;
+  is25DTilt: boolean;
+  isV2XEnabled: boolean;
 }
+
+export interface V2XMeshLink {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  type: 'v2v' | 'fcw' | 'platoon' | 'v2i';
+}
+
+export interface PedestrianAgent {
+  id: string;
+  crosswalkId: string;
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  speed: number;
+  state: 'waiting' | 'crossing' | 'done';
+  color: string;
+}
+
+export interface LevelOfServiceReport {
+  grade: 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  descriptionAr: string;
+  descriptionEn: string;
+  badgeColor: string;
+  averageDelaySeconds: number;
+  economicSavingsSar: number;
+}
+

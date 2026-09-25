@@ -32,17 +32,43 @@
 - **Ambient Noise Pollution (dB):** Logarithmic acoustic model factoring traffic density and heavy vehicle rumble.
 - **Congestion Index (%):** Ratio of current network speed against free-flow nominal velocity.
 
-### 4. 🗺️ Diverse City Topology Presets
-1. **Abha Ring & King Fahd Corridor (طريق الملك فهد والدائري بأبها):** Ring road layout featuring mountain avenues, boulevards, and intersecting arterials honoring the Aseer region.
-2. **Metropolitan Downtown Grid (الشبكة الحضرية المركزية):** 4-way synchronized urban grid network with high-density intersections.
-3. **Turbo Smart Roundabout (الدوار المروري الذكي):** Multi-lane high-throughput roundabout with directional entry/exit slipways.
-4. **Highway Cloverleaf Interchange (التقاطع السريع الحر):** Grade-separated multi-level expressway with continuous free-flow bypass ramps.
+### 4. 📡 V2X (Vehicle-to-Everything) Communication & Autonomous Platooning
+- **V2V (Vehicle-to-Vehicle) Mesh:** Real-time peer-to-peer telemetry broadcasting speed, position, and acceleration.
+- **Forward Collision Warning (FCW):** Instant red pulse warning vectors and automated emergency braking when lead vehicle decelerates critically.
+- **Autonomous Truck Platooning (CACC):** Consecutive heavy trucks form an aerodynamic linked platoon connected by cyan telemetry links, shrinking headway to 0.8s and cutting energy usage by 25%.
+- **V2I (Vehicle-to-Infrastructure):** Green Light Optimal Speed Advisory (GLOSA) feeds remaining signal times directly into vehicle navigation controllers.
 
-### 5. 🔍 Interactive God-Mode Tools
-- **Live Vehicle Inspector:** Click any car on the road to inspect its speed, acceleration, fuel type, carbon footprint, driver patience, and destination.
-- **Incident & Bottleneck Spawner:** Click any lane to trigger a simulated breakdown or roadblock and watch the downstream congestion wave form!
-- **Dynamic Weather Engine:** Toggle between **Clear Sun**, **Heavy Rain** (increases stopping distance and reduces speed by 22%), and **Mountain Fog**.
-- **Procedural Web Audio Synthesizer:** Real-time engine revs, emergency sirens, and traffic light switch chimes with zero external audio assets.
+### 5. 🚶 Pedestrian Agents & Smart Crosswalk Safety
+- **Autonomous Pedestrians:** Dynamic pedestrian agents traversing sidewalks and zebra crossings.
+- **Smart Push-to-Cross Buttons:** Pedestrian call triggers automated clearance of conflicting vehicular signals with audible chime indicators.
+- **Multi-Agent Collision Avoidance:** Vehicles continuously project vision cones, halting smoothly when pedestrians occupy zebra crossings.
+
+### 6. 🚨 Field Crisis & Emergency Scenario Injector
+- **Armored VIP Convoy:** Triple-vehicle armored motorcade with flashing police escorts and synchronized signal preemption.
+- **Roadwork & Pylon Bottleneck:** Lane closures forcing dynamic merge maneuvers governed by MOBIL.
+- **Accident Collision Pile-up:** Crashed vehicles generating realistic animated smoke particles and bottleneck queues.
+- **Mountain Torrential Flash Flood:** Simulates heavy rainwater accumulation typical of Abha topography, forcing automatic speed moderation.
+
+### 7. 🏎️ Cockpit Telemetry HUD & Driver Dashcam
+- **Digital Instrument Cluster:** Formula-E / Tesla style glass cockpit overlay with circular digital speedometer.
+- **IDM Dynamic Gap Radar:** Live comparison of real-time headway $s$ versus mathematical desired gap $s^*$.
+- **Throttle & Brake Strain Gauges:** Real-time visual feedback of vehicle acceleration vs brake pedal force.
+- **Eco-Driving Rating:** Adaptive grade scoring driver energy conservation.
+
+### 8. 🧠 In-Browser RL Training Lab & Q-Learning Playground
+- **Hyperparameter Tuning:** Interactive sliders for Learning Rate ($\alpha$), Discount Factor ($\gamma$), and Exploration ($\epsilon$).
+- **Fast-Forward Episode Simulator:** Train 50 episodes in milliseconds right in the client, updating the live Q-policy matrix.
+- **Reward Convergence Curve:** Pure HTML5 Canvas visualization of reinforcement learning policy stability.
+- **Benchmark Comparative Matrix:** Quantitative comparison between Fixed-Time, Actuated Sensors, and Q-Learning agents.
+
+### 9. 📊 HCM Level of Service (LOS) & Smart City Sustainability Report
+- **Highway Capacity Manual (HCM) Compliance:** Computes official Level of Service grades (LOS A through F) based on control delay.
+- **Socio-Economic Return:** Estimates fuel savings in Liters and monetary economic return in Saudi Riyals (SAR).
+- **JSON Export & Print Suite:** Instant one-click generation and download of executive municipal reports.
+
+### 10. 📐 2.5D Isometric Tilt Perspective & Topologies
+- **2.5D Camera Angle:** Real-time isometric affine matrix tilt rendering pseudo-3D road elevation, curb extrusion, and vehicle shadows.
+- **4 Geographic Topologies:** Abha Ring & King Fahd Corridor, Metropolitan Downtown Grid, Turbo Smart Roundabout, and Highway Cloverleaf Interchange.
 
 ---
 

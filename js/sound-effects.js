@@ -149,6 +149,57 @@ class CityAudioEngine {
     osc.stop(t + 0.05);
   }
 
+  playPedestrianChime() {
+    if (this.isMuted) return;
+    this.ensureContext();
+    const t = this.ctx.currentTime;
+
+    // Repeating high-pitch chime for pedestrian walk signal (accessibility standard)
+    [0, 0.12, 0.24].forEach((delay) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1046.5, t + delay); // C6
+
+      gain.gain.setValueAtTime(0.08, t + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t + delay);
+      osc.stop(t + delay + 0.09);
+    });
+  }
+
+  playFcwAlert() {
+    if (this.isMuted) return;
+    this.ensureContext();
+    const t = this.ctx.currentTime;
+
+    // Urgent rapid double-beep for Forward Collision Warning
+    [0, 0.08].forEach((delay) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(1400, t + delay);
+
+      gain.gain.setValueAtTime(0.18, t + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t + delay);
+      osc.stop(t + delay + 0.07);
+    });
+  }
+
+  playEmergencySiren() {
+    this.startEmergencySiren();
+    setTimeout(() => {
+      this.stopEmergencySiren();
+    }, 4500);
+  }
+
   toggleMute() {
     this.isMuted = !this.isMuted;
     if (this.isMuted && this.isSirenPlaying) {

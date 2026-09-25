@@ -482,6 +482,169 @@ body {
   transform: translateY(0);
 }
 
+/* ==========================================================================
+   MODAL DIALOGS (REPORT & RL LAB)
+   ========================================================================== */
+.city-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.city-modal-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.city-modal-content {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.city-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.btn-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-modal-close:hover {
+  color: var(--text-main);
+  background: var(--bg-subtle);
+}
+
+.city-modal-body {
+  padding: 20px 24px;
+}
+
+.city-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* LOS Banner */
+.report-los-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+.los-grade-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  font-family: var(--font-mono);
+  box-shadow: 0 0 15px currentColor;
+}
+
+.report-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.rep-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rep-lbl {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.rep-val {
+  font-size: 16px;
+  font-family: var(--font-mono);
+}
+
+/* Benchmark Table */
+.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-top: 8px;
+}
+
+.benchmark-table th,
+.benchmark-table td {
+  padding: 8px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-color);
+}
+
+[dir="ltr"] .benchmark-table th,
+[dir="ltr"] .benchmark-table td {
+  text-align: left;
+}
+
+.benchmark-table th {
+  background: var(--bg-subtle);
+  color: var(--text-dim);
+  font-weight: 800;
+}
+
+/* Scenario Buttons */
+.btn-scenario {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+}
+
+.btn-scenario:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
   .simulation-workspace {
